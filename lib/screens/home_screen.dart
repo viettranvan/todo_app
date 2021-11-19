@@ -1,12 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get_it/get_it.dart';
+import 'package:todo_app/cubit/todo_detail_cubit.dart';
 import 'package:todo_app/cubit/todolist_cubit.dart';
 import 'package:todo_app/cubit/todolist_state.dart';
 import 'package:todo_app/models/todo_model.dart';
 import 'package:todo_app/screens/screens.dart';
 import 'package:todo_app/services/fake_data.dart';
 import 'package:todo_app/utils/constants.dart';
+import 'package:todo_app/utils/injection.dart';
 import 'package:todo_app/widgets/todo_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -41,9 +44,9 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        child: BlocBuilder<TodolistCubit,TodolistState>(
-          builder: (context, state){
-            if(state is! TodoLoad) {
+        child: BlocBuilder<TodolistCubit, TodolistState>(
+          builder: (context, state) {
+            if (state is! TodoLoad) {
               return Center(
                 child: CircularProgressIndicator(),
               );
@@ -74,9 +77,14 @@ class HomeScreen extends StatelessWidget {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) =>
-                                  TodoDetailScreen(todo: todos[index])));
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => BlocProvider(
+                                  create: (context) =>
+                                      TodoDetailCubit(getIt<TodolistCubit>()),
+                                  child: TodoDetailScreen(todo: todos[index])),
+                            ),
+                          );
                         },
                         child: TodoCard(
                           color: todos[index].color,
@@ -92,7 +100,7 @@ class HomeScreen extends StatelessWidget {
                   height: 50.0,
                   child: Center(
                     child:
-                    Text("${todos.length} Notes", style: kTextW400Size14),
+                        Text("${todos.length} Notes", style: kTextW400Size14),
                   ),
                 ),
               ],
@@ -103,3 +111,5 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
+

@@ -1,10 +1,10 @@
 import 'dart:ui';
 
 class Todo {
-  final int id;
-  final String title;
-  final Color color;
-  final String content;
+  int id;
+  String title;
+  Color color;
+  String content;
 
   Todo({
     required this.id,
@@ -12,4 +12,5 @@ class Todo {
     required this.color,
     required this.content,
   });
+
 }
